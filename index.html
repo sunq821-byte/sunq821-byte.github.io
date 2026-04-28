@@ -1,2 +1,1192 @@
-<p>Hello</p>
-<p>我是NYCKEL，这是我的个人网站</p>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="陶俊辉 — 成都东软学院软件工程大二，Java后端开发方向" />
+  <title>陶俊辉 · TaoJunhui</title>
+
+  <!-- Google Fonts: Fraunces (display) + Outfit (body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,900;1,9..144,300&family=Outfit:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ===== DESIGN TOKENS ===== */
+    :root {
+      /* Perceptually-uniform OKLCH palette */
+      --bg-base:      oklch(12% 0.015 250);
+      --bg-surface:   oklch(16% 0.015 250);
+      --bg-raised:    oklch(20% 0.012 250);
+      --bg-hover:     oklch(24% 0.012 250);
+
+      --text-primary: oklch(94% 0.008 80);
+      --text-secondary: oklch(65% 0.01 250);
+      --text-muted:   oklch(45% 0.008 250);
+
+      --accent:       oklch(72% 0.19 55);    /* warm orange */
+      --accent-dim:   oklch(55% 0.15 55);
+      --accent-glow:  oklch(72% 0.19 55 / 0.15);
+
+      --border:       oklch(28% 0.01 250);
+      --border-accent: oklch(60% 0.19 55 / 0.4);
+
+      /* Typography */
+      --font-display: 'Fraunces', Georgia, serif;
+      --font-body:    'Outfit', 'Segoe UI', system-ui, sans-serif;
+      --font-mono:    'JetBrains Mono', 'Courier New', monospace;
+
+      /* Spacing rhythm (base: 8px) */
+      --space-xs: 0.5rem;
+      --space-sm: 1rem;
+      --space-md: 1.5rem;
+      --space-lg: 2.5rem;
+      --space-xl: 4rem;
+      --space-2xl: 7rem;
+
+      /* Motion */
+      --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-in-out:   cubic-bezier(0.65, 0, 0.35, 1);
+    }
+
+    /* ===== RESET & BASE ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
+
+    body {
+      background: var(--bg-base);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      font-weight: 400;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg-base); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--accent-dim); }
+
+    /* Selection */
+    ::selection { background: var(--accent-glow); color: var(--accent); }
+
+    /* ===== NAVIGATION ===== */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 1.25rem var(--space-lg);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: oklch(12% 0.015 250 / 0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid oklch(28% 0.01 250 / 0);
+      transition: border-color 0.3s ease;
+    }
+    .nav.scrolled { border-bottom-color: var(--border); }
+
+    .nav-logo {
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--accent);
+      letter-spacing: 0.05em;
+      text-decoration: none;
+    }
+    .nav-logo::before { content: '> '; opacity: 0.5; }
+
+    .nav-links {
+      display: flex;
+      gap: var(--space-lg);
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-decoration: none;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: color 0.2s ease;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -3px; left: 0; right: 0;
+      height: 1px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.25s var(--ease-out-expo);
+    }
+    .nav-links a:hover { color: var(--text-primary); }
+    .nav-links a:hover::after { transform: scaleX(1); }
+
+    /* Hamburger */
+    .nav-toggle {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 4px;
+      background: none;
+      border: none;
+    }
+    .nav-toggle span {
+      display: block;
+      width: 22px; height: 2px;
+      background: var(--text-primary);
+      border-radius: 1px;
+      transition: transform 0.3s var(--ease-out-expo), opacity 0.3s ease;
+    }
+    .nav-toggle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .nav-toggle.open span:nth-child(2) { opacity: 0; }
+    .nav-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* ===== HERO ===== */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 8rem var(--space-lg) var(--space-xl);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Background grid */
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(oklch(30% 0.01 250 / 0.15) 1px, transparent 1px),
+        linear-gradient(90deg, oklch(30% 0.01 250 / 0.15) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 30%, transparent 100%);
+    }
+
+    /* Glow orb */
+    .hero::after {
+      content: '';
+      position: absolute;
+      width: 600px; height: 600px;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+      max-width: 860px;
+      width: 100%;
+    }
+
+    .hero-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      color: var(--accent);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: var(--space-md);
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+      opacity: 0;
+      animation: fadeUp 0.7s var(--ease-out-expo) 0.1s forwards;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      display: block;
+      width: 32px; height: 1px;
+      background: var(--accent);
+    }
+
+    .hero-name {
+      font-family: var(--font-display);
+      font-size: clamp(3.5rem, 9vw, 7.5rem);
+      font-weight: 900;
+      line-height: 0.95;
+      letter-spacing: -0.03em;
+      color: var(--text-primary);
+      margin-bottom: var(--space-md);
+      opacity: 0;
+      animation: fadeUp 0.8s var(--ease-out-expo) 0.2s forwards;
+    }
+    .hero-name .accent-word {
+      color: var(--accent);
+      font-style: italic;
+      font-weight: 300;
+    }
+
+    .hero-tagline {
+      font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+      color: var(--text-secondary);
+      font-weight: 300;
+      line-height: 1.5;
+      max-width: 520px;
+      margin-bottom: var(--space-xl);
+      opacity: 0;
+      animation: fadeUp 0.8s var(--ease-out-expo) 0.35s forwards;
+    }
+    .hero-tagline strong { color: var(--text-primary); font-weight: 500; }
+
+    .hero-cta {
+      display: flex;
+      gap: var(--space-sm);
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.8s var(--ease-out-expo) 0.5s forwards;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.75rem;
+      border-radius: 4px;
+      font-family: var(--font-body);
+      font-size: 0.875rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.25s var(--ease-out-expo);
+      border: 1px solid transparent;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: oklch(12% 0.015 250);
+      border-color: var(--accent);
+    }
+    .btn-primary:hover {
+      background: oklch(78% 0.19 55);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px var(--accent-glow);
+    }
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-primary);
+      border-color: var(--border);
+    }
+    .btn-secondary:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    /* Scroll indicator */
+    .scroll-hint {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-muted);
+      font-size: 0.6875rem;
+      font-family: var(--font-mono);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      opacity: 0;
+      animation: fadeIn 1s ease 1.2s forwards;
+    }
+    .scroll-hint-line {
+      width: 1px; height: 40px;
+      background: linear-gradient(to bottom, var(--accent), transparent);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+
+    /* ===== SECTION COMMON ===== */
+    .section {
+      padding: var(--space-2xl) var(--space-lg);
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-header {
+      margin-bottom: var(--space-xl);
+    }
+
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--accent);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: var(--space-xs);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+      max-width: 80px;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4.5vw, 3.25rem);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+    }
+
+    /* Reveal animation */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s var(--ease-out-expo), transform 0.7s var(--ease-out-expo);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+
+    /* ===== ABOUT ===== */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-xl);
+      align-items: start;
+    }
+
+    .about-text p {
+      color: var(--text-secondary);
+      margin-bottom: var(--space-sm);
+      font-size: 1.0625rem;
+      line-height: 1.8;
+    }
+    .about-text p:last-child { margin-bottom: 0; }
+    .about-text strong { color: var(--text-primary); }
+
+    .about-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-sm);
+    }
+
+    .stat-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: var(--space-md);
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.2s ease, transform 0.25s var(--ease-out-expo);
+    }
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s var(--ease-out-expo);
+    }
+    .stat-card:hover { border-color: var(--border-accent); transform: translateY(-3px); }
+    .stat-card:hover::before { transform: scaleX(1); }
+
+    .stat-value {
+      font-family: var(--font-display);
+      font-size: 2.25rem;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 0.35rem;
+    }
+    .stat-label {
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+      font-weight: 500;
+      letter-spacing: 0.04em;
+    }
+
+    /* ===== TECH STACK ===== */
+    .tech-section {
+      background: var(--bg-surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tech-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--space-md);
+    }
+
+    .tech-category {
+      background: var(--bg-base);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: var(--space-md) var(--space-lg);
+      transition: border-color 0.2s ease;
+    }
+    .tech-category:hover { border-color: var(--border-accent); }
+
+    .tech-category-title {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--accent);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: var(--space-sm);
+      padding-bottom: var(--space-xs);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tech-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .tech-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.3rem 0.75rem;
+      background: var(--bg-raised);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      color: var(--text-secondary);
+      transition: all 0.2s ease;
+      cursor: default;
+    }
+    .tech-tag:hover {
+      background: var(--accent-glow);
+      border-color: var(--border-accent);
+      color: var(--accent);
+    }
+    .tech-tag .dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--accent);
+      opacity: 0.5;
+    }
+
+    /* Courses */
+    .course-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .course-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      padding: 0.5rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .course-item:last-child { border-bottom: none; }
+    .course-item::before {
+      content: '';
+      flex-shrink: 0;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      opacity: 0.7;
+    }
+
+    /* ===== PROJECTS ===== */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: var(--space-md);
+    }
+
+    .project-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: var(--space-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.25s ease, transform 0.3s var(--ease-out-expo), box-shadow 0.3s ease;
+      cursor: default;
+    }
+    .project-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), oklch(65% 0.18 30));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s var(--ease-out-expo);
+    }
+    .project-card:hover {
+      border-color: var(--border-accent);
+      transform: translateY(-5px);
+      box-shadow: 0 20px 40px oklch(5% 0.01 250 / 0.5);
+    }
+    .project-card:hover::before { transform: scaleX(1); }
+
+    /* Placeholder card */
+    .project-card.placeholder {
+      border-style: dashed;
+      background: transparent;
+      opacity: 0.4;
+    }
+    .project-card.placeholder:hover {
+      opacity: 0.7;
+      transform: translateY(-3px);
+    }
+
+    .project-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: var(--space-sm);
+    }
+
+    .project-name {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+
+    .project-links {
+      display: flex;
+      gap: 0.5rem;
+      flex-shrink: 0;
+    }
+    .project-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px; height: 32px;
+      background: var(--bg-raised);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.875rem;
+      transition: all 0.2s ease;
+    }
+    .project-link:hover { border-color: var(--accent); color: var(--accent); }
+
+    .project-desc {
+      font-size: 0.9375rem;
+      color: var(--text-secondary);
+      line-height: 1.65;
+      flex: 1;
+    }
+
+    .project-role {
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      padding: 0.35rem 0.7rem;
+      background: var(--bg-raised);
+      border-radius: 3px;
+      display: inline-block;
+      width: fit-content;
+    }
+
+    .project-highlight {
+      font-size: 0.875rem;
+      color: var(--accent);
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      padding: 0.6rem 0.8rem;
+      background: var(--accent-glow);
+      border-radius: 4px;
+      border-left: 2px solid var(--accent);
+    }
+    .project-highlight::before { content: '★'; font-size: 0.75rem; margin-top: 1px; flex-shrink: 0; }
+
+    .project-tech {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: auto;
+    }
+    .project-tech-tag {
+      padding: 0.2rem 0.6rem;
+      background: var(--bg-raised);
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .placeholder-text {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.875rem;
+      padding: var(--space-lg) 0;
+    }
+    .placeholder-plus {
+      font-size: 2rem;
+      color: var(--border);
+      margin-bottom: 0.5rem;
+    }
+
+    /* ===== CONTACT ===== */
+    .contact-section {
+      background: var(--bg-surface);
+      border-top: 1px solid var(--border);
+    }
+
+    .contact-inner {
+      max-width: 700px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .contact-intro {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: var(--space-xl);
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--space-sm);
+      margin-bottom: var(--space-xl);
+      text-align: left;
+    }
+
+    .contact-card {
+      background: var(--bg-base);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: var(--space-md);
+      text-decoration: none;
+      display: block;
+      transition: all 0.25s var(--ease-out-expo);
+      position: relative;
+      overflow: hidden;
+    }
+    .contact-card::after {
+      content: '↗';
+      position: absolute;
+      top: var(--space-sm); right: var(--space-sm);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      transition: transform 0.2s ease, color 0.2s ease;
+    }
+    .contact-card:hover {
+      border-color: var(--border-accent);
+      transform: translateY(-3px);
+    }
+    .contact-card:hover::after { color: var(--accent); transform: translate(2px, -2px); }
+
+    .contact-card-type {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      color: var(--accent);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 0.35rem;
+    }
+    .contact-card-value {
+      font-size: 0.9375rem;
+      color: var(--text-primary);
+      font-weight: 500;
+      word-break: break-all;
+    }
+
+    /* WeChat QR placeholder */
+    .wechat-note {
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+      margin-top: 0.35rem;
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+      padding: var(--space-lg);
+      text-align: center;
+      border-top: 1px solid var(--border);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* ===== DIVIDER ===== */
+    .divider {
+      border: none;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
+      margin: 0;
+    }
+
+    /* ===== ANIMATIONS ===== */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.3; transform: scaleY(0.8); }
+      50%       { opacity: 1; transform: scaleY(1); }
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0; }
+    }
+
+    /* Cursor blink for terminal feel */
+    .cursor::after {
+      content: '_';
+      animation: blink 1.2s step-end infinite;
+      color: var(--accent);
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      :root {
+        --space-2xl: 4.5rem;
+        --space-xl: 3rem;
+        --space-lg: 1.5rem;
+      }
+
+      .nav-links {
+        position: fixed;
+        top: 64px; left: 0; right: 0;
+        background: oklch(12% 0.015 250 / 0.97);
+        backdrop-filter: blur(16px);
+        flex-direction: column;
+        gap: 0;
+        padding: 0;
+        border-bottom: 1px solid var(--border);
+        clip-path: inset(0 0 100% 0);
+        transition: clip-path 0.4s var(--ease-out-expo);
+      }
+      .nav-links.open { clip-path: inset(0 0 0% 0); }
+      .nav-links a {
+        display: block;
+        padding: 1.1rem 1.5rem;
+        border-bottom: 1px solid var(--border);
+        font-size: 0.9375rem;
+      }
+      .nav-links a::after { display: none; }
+      .nav-toggle { display: flex; }
+
+      .about-grid { grid-template-columns: 1fr; }
+      .about-stats { grid-template-columns: 1fr 1fr; }
+
+      .hero-name { letter-spacing: -0.02em; }
+
+      .section { padding: var(--space-xl) var(--space-md); }
+    }
+
+    @media (max-width: 480px) {
+      .about-stats { grid-template-columns: 1fr 1fr; }
+      .hero-cta { flex-direction: column; }
+      .btn { justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== NAV ===== -->
+  <nav class="nav" id="nav" role="navigation" aria-label="主导航">
+    <a href="#hero" class="nav-logo" aria-label="回到顶部">tjh.dev</a>
+    <ul class="nav-links" id="navLinks" role="list">
+      <li><a href="#about">关于</a></li>
+      <li><a href="#skills">技术栈</a></li>
+      <li><a href="#projects">项目</a></li>
+      <li><a href="#contact">联系</a></li>
+    </ul>
+    <button class="nav-toggle" id="navToggle" aria-label="切换菜单" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- ===== HERO ===== -->
+  <section id="hero" class="hero" aria-label="个人介绍">
+    <div class="hero-inner">
+      <p class="hero-eyebrow">成都东软学院 · 软件工程 · 大二</p>
+      <h1 class="hero-name">陶<span class="accent-word">俊辉</span></h1>
+      <p class="hero-tagline">
+        <strong>Java 后端开发</strong>方向，探索 AI 与全栈边界。<br />
+        正在构建 <strong>小蜀记</strong>，刷算法，学 Vue。
+      </p>
+      <div class="hero-cta">
+        <a href="#projects" class="btn btn-primary">查看项目</a>
+        <a href="https://github.com/sunq821-byte" class="btn btn-secondary" target="_blank" rel="noopener">GitHub ↗</a>
+      </div>
+    </div>
+    <div class="scroll-hint" aria-hidden="true">
+      <div class="scroll-hint-line"></div>
+      <span>scroll</span>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- ===== ABOUT ===== -->
+  <section id="about" class="section" aria-labelledby="about-title">
+    <div class="section-header reveal">
+      <p class="section-label">01 · About</p>
+      <h2 class="section-title" id="about-title">关于我</h2>
+    </div>
+    <div class="about-grid">
+      <div class="about-text reveal reveal-delay-1">
+        <p>
+          就读于<strong>成都东软学院软件工程专业</strong>，大二在读。技术方向聚焦
+          <strong>Java 后端</strong>，同时涉猎前端、AI 应用。
+        </p>
+        <p>
+          目前正在完善微信小程序<strong>「小蜀记」</strong>——一款四川非遗文化导览应用，
+          基于 uni-app + 微信云开发构建，含语音导览、打卡签到等核心功能。
+        </p>
+        <p>
+          坚持刷 LeetCode，系统学习数据结构与算法。未来目标是通过实习实践，
+          将所学转化为真正的工程能力。
+        </p>
+      </div>
+      <div class="about-stats reveal reveal-delay-2">
+        <div class="stat-card">
+          <div class="stat-value">5+</div>
+          <div class="stat-label">掌握语言 / 框架</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">Java</div>
+          <div class="stat-label">主攻后端技术</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">LCP</div>
+          <div class="stat-label">持续刷题中</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">2026</div>
+          <div class="stat-label">大二在读</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- ===== TECH STACK ===== -->
+  <section id="skills" class="tech-section" aria-labelledby="skills-title">
+    <div class="section" style="max-width:1100px; margin:0 auto;">
+      <div class="section-header reveal">
+        <p class="section-label">02 · Skills</p>
+        <h2 class="section-title" id="skills-title">技术栈</h2>
+      </div>
+      <div class="tech-grid">
+
+        <div class="tech-category reveal reveal-delay-1">
+          <div class="tech-category-title">编程语言</div>
+          <div class="tech-tags">
+            <span class="tech-tag"><span class="dot"></span>Java</span>
+            <span class="tech-tag"><span class="dot"></span>Python</span>
+            <span class="tech-tag"><span class="dot"></span>JavaScript</span>
+            <span class="tech-tag"><span class="dot"></span>HTML / CSS</span>
+            <span class="tech-tag"><span class="dot"></span>仓颉</span>
+          </div>
+        </div>
+
+        <div class="tech-category reveal reveal-delay-2">
+          <div class="tech-category-title">框架 &amp; 平台</div>
+          <div class="tech-tags">
+            <span class="tech-tag"><span class="dot"></span>uni-app</span>
+            <span class="tech-tag"><span class="dot"></span>Vue（学习中）</span>
+            <span class="tech-tag"><span class="dot"></span>微信云开发</span>
+            <span class="tech-tag"><span class="dot"></span>Node.js</span>
+          </div>
+        </div>
+
+        <div class="tech-category reveal reveal-delay-3">
+          <div class="tech-category-title">工具链</div>
+          <div class="tech-tags">
+            <span class="tech-tag"><span class="dot"></span>Git / GitHub</span>
+            <span class="tech-tag"><span class="dot"></span>IntelliJ IDEA</span>
+            <span class="tech-tag"><span class="dot"></span>VS Code</span>
+            <span class="tech-tag"><span class="dot"></span>Trae</span>
+            <span class="tech-tag"><span class="dot"></span>WorkBuddy</span>
+          </div>
+        </div>
+
+        <div class="tech-category reveal reveal-delay-4">
+          <div class="tech-category-title">核心课程</div>
+          <div class="course-list">
+            <div class="course-item">数据结构与算法</div>
+            <div class="course-item">操作系统</div>
+            <div class="course-item">计算机网络</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- ===== PROJECTS ===== -->
+  <section id="projects" class="section" aria-labelledby="projects-title">
+    <div class="section-header reveal">
+      <p class="section-label">03 · Projects</p>
+      <h2 class="section-title" id="projects-title">项目经历</h2>
+    </div>
+
+    <div class="projects-grid">
+
+      <!-- Project: 小蜀记 -->
+      <article class="project-card reveal reveal-delay-1">
+        <div class="project-header">
+          <h3 class="project-name">小蜀记</h3>
+          <div class="project-links" aria-label="项目链接">
+            <!-- GitHub 链接待补充 -->
+            <a href="#" class="project-link" title="GitHub（待添加）" aria-label="GitHub 链接">
+              <!-- GitHub icon -->
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.73.5.5 5.73.5 12c0 5.1 3.3 9.42 7.88 10.95.58.1.79-.25.79-.56v-2.04c-3.2.69-3.87-1.54-3.87-1.54-.52-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.02 1.75 2.68 1.24 3.33.95.1-.74.4-1.24.72-1.53-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.19a11.1 11.1 0 012.9-.39c.98 0 1.97.13 2.9.39 2.2-1.5 3.17-1.19 3.17-1.19.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.41-2.7 5.39-5.27 5.67.41.36.78 1.07.78 2.15v3.19c0 .31.2.67.8.56C20.7 21.42 24 17.1 24 12c0-6.27-5.23-11.5-12-11.5z"/></svg>
+            </a>
+          </div>
+        </div>
+        <p class="project-desc">
+          四川非遗文化导览微信小程序，帮助用户探索非遗景点、收听语音导览、完成打卡签到。
+          融合文化传承与现代交互体验。
+        </p>
+        <span class="project-role"># 团队项目 · 5 人 · 核心功能开发</span>
+        <div class="project-highlight">
+          语音导览防重复播放优化；百度 TTS 集成；云函数架构设计
+        </div>
+        <div class="project-tech">
+          <span class="project-tech-tag">uni-app</span>
+          <span class="project-tech-tag">微信云开发</span>
+          <span class="project-tech-tag">NoSQL</span>
+          <span class="project-tech-tag">百度TTS</span>
+        </div>
+      </article>
+
+      <!-- Placeholder projects (待完善) -->
+      <article class="project-card placeholder reveal reveal-delay-2" aria-hidden="true">
+        <div class="placeholder-text">
+          <div class="placeholder-plus">+</div>
+          <p>项目待补充</p>
+          <p style="font-size:0.75rem; margin-top:0.35rem; font-family:var(--font-mono);">
+            // 名称、描述、技术栈、链接
+          </p>
+        </div>
+      </article>
+
+      <article class="project-card placeholder reveal reveal-delay-3" aria-hidden="true">
+        <div class="placeholder-text">
+          <div class="placeholder-plus">+</div>
+          <p>项目待补充</p>
+          <p style="font-size:0.75rem; margin-top:0.35rem; font-family:var(--font-mono);">
+            // 名称、描述、技术栈、链接
+          </p>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- ===== OPTIONAL / BONUS ===== -->
+  <section class="section" aria-labelledby="more-title">
+    <div class="section-header reveal">
+      <p class="section-label">04 · More</p>
+      <h2 class="section-title" id="more-title">加分项</h2>
+    </div>
+    <div class="tech-grid">
+
+      <div class="tech-category reveal reveal-delay-1">
+        <div class="tech-category-title">博客 / 文章</div>
+        <p style="font-size:0.875rem; color:var(--text-muted); font-style:italic;">
+          // 待补充博客或技术文章链接
+        </p>
+      </div>
+
+      <div class="tech-category reveal reveal-delay-2">
+        <div class="tech-category-title">算法刷题</div>
+        <p style="font-size:0.875rem; color:var(--text-muted); font-style:italic;">
+          // 待补充 LeetCode 主页及刷题进度
+        </p>
+      </div>
+
+      <div class="tech-category reveal reveal-delay-3">
+        <div class="tech-category-title">比赛 / 奖项</div>
+        <p style="font-size:0.875rem; color:var(--text-muted); font-style:italic;">
+          // 待补充参赛经历或所获奖项
+        </p>
+      </div>
+
+      <div class="tech-category reveal reveal-delay-4">
+        <div class="tech-category-title">简历下载</div>
+        <p style="font-size:0.875rem; color:var(--text-muted); font-style:italic;">
+          // 待上传 PDF 简历并填写下载链接
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- ===== CONTACT ===== -->
+  <section id="contact" class="contact-section" aria-labelledby="contact-title">
+    <div class="section">
+      <div class="contact-inner">
+        <div class="section-header reveal">
+          <p class="section-label" style="justify-content:center;">05 · Contact</p>
+          <h2 class="section-title" id="contact-title" style="text-align:center;">联系方式</h2>
+        </div>
+        <p class="contact-intro reveal reveal-delay-1">
+          无论是项目合作、技术交流还是实习机会，都欢迎联系。
+        </p>
+        <div class="contact-grid reveal reveal-delay-2">
+
+          <a href="https://github.com/sunq821-byte" class="contact-card" target="_blank" rel="noopener">
+            <div class="contact-card-type">GitHub</div>
+            <div class="contact-card-value">sunq821-byte</div>
+          </a>
+
+          <a href="mailto:sunq821@gmail.com" class="contact-card">
+            <div class="contact-card-type">Email · Gmail</div>
+            <div class="contact-card-value">sunq821@gmail.com</div>
+          </a>
+
+          <a href="mailto:1115681735@qq.com" class="contact-card">
+            <div class="contact-card-type">Email · QQ</div>
+            <div class="contact-card-value">1115681735@qq.com</div>
+          </a>
+
+          <div class="contact-card" style="cursor:default;" tabindex="0">
+            <div class="contact-card-type">微信</div>
+            <div class="contact-card-value">nyckel0476</div>
+            <div class="wechat-note">// 可添加好友联系</div>
+          </div>
+
+        </div>
+
+        <a href="mailto:sunq821@gmail.com" class="btn btn-primary reveal reveal-delay-3" style="margin:0 auto;">
+          发邮件给我
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer>
+    <p>
+      © 2026 陶俊辉 · 成都东软学院 · 
+      <a href="https://github.com/sunq821-byte" target="_blank" rel="noopener">GitHub</a>
+      &nbsp;·&nbsp; Built with HTML / CSS / JS
+    </p>
+  </footer>
+
+  <!-- ===== SCRIPTS ===== -->
+  <script>
+    // --- Nav scroll behavior ---
+    const nav = document.getElementById('nav');
+    const navToggle = document.getElementById('navToggle');
+    const navLinks = document.getElementById('navLinks');
+
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 40);
+    }, { passive: true });
+
+    // --- Mobile menu ---
+    navToggle.addEventListener('click', () => {
+      const isOpen = navToggle.classList.toggle('open');
+      navLinks.classList.toggle('open', isOpen);
+      navToggle.setAttribute('aria-expanded', isOpen.toString());
+    });
+
+    navLinks.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        navToggle.classList.remove('open');
+        navLinks.classList.remove('open');
+        navToggle.setAttribute('aria-expanded', 'false');
+      });
+    });
+
+    // --- Scroll reveal ---
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
+    );
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // --- Active nav link highlight ---
+    const sections = document.querySelectorAll('section[id]');
+    const navAnchors = document.querySelectorAll('.nav-links a');
+
+    const sectionObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const id = entry.target.id;
+            navAnchors.forEach(a => {
+              a.style.color = a.getAttribute('href') === `#${id}`
+                ? 'oklch(94% 0.008 80)'
+                : '';
+            });
+          }
+        });
+      },
+      { threshold: 0.4 }
+    );
+    sections.forEach(s => sectionObserver.observe(s));
+
+    // --- Smooth cursor parallax on hero glow ---
+    const hero = document.querySelector('.hero');
+    if (hero) {
+      hero.addEventListener('mousemove', (e) => {
+        const rect = hero.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width - 0.5) * 30;
+        const y = ((e.clientY - rect.top)  / rect.height - 0.5) * 30;
+        hero.style.setProperty('--glow-x', `calc(50% + ${x}px)`);
+        hero.style.setProperty('--glow-y', `calc(50% + ${y}px)`);
+      }, { passive: true });
+    }
+  </script>
+
+</body>
+</html>
